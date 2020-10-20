@@ -1,24 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCosa, addCosaDeInternet, startUpdateTodos } from './redux/actions'
+
 
 function App() {
+
+  const [cosa, setCosa] = useState("")
+
+  const dispatch = useDispatch()
+  const cosas = useSelector(state => state.cosas);
+  const todos = useSelector(state => state.todos)
+
+  useEffect(() => {
+    dispatch(startUpdateTodos())
+  })
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type="text" value={cosa} onChange={e => setCosa(e.target.value)}></input>
+      <ul>
+        {cosas.map(i => <li>{i}<button onClick={
+          () => dispatch({ type: "REMOVE_COSA", payload: i })
+        }>Borrar</button></li>)}
+      </ul>
+      <button onClick={
+        () => dispatch(addCosa(cosa))}>Incluye algo en el store</button>
+      <button onClick={
+        () => dispatch(addCosaDeInternet())}>carga datos de todos</button>
+
+
+
+      <hr></hr>
+
+      <ul>
+        {
+          todos.map(i => <li>{i.title}</li>)
+        }
+      </ul>
     </div>
   );
 }
